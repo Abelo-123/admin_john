@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from '../UserContext';
 import axios from "axios";
-import MyLoader from "../Loader/page";
 import Swal from "sweetalert2";
 
 const Account = () => {
