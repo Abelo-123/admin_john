@@ -30,23 +30,10 @@ const Account = () => {
     const [rate, setRate] = useState(null)
     const [allrate, setallRate] = useState(null)
     const [searchQuery, setSearchQuery] = useState("");
-    const [loading, setLoading] = useState(false); // Loading state
-    const [filteredServices, setFilteredServices] = useState([]);
     const [services, setService] = useState([])
     const [searchTerm, setSearchTerm] = useState("");
-    const [iframeVisible, setIframeVisible] = useState(false)
-    const [iframeKey, setIframeKey] = useState(0);
-    const [tg, setTg] = useState('')
-    const [depo, setDepo] = useState([])
     const [depoo, setDepoo] = useState([])
-    const [loadingb, setLoaderb] = useState(false)
-    const [amount, setAmount] = useState(null)
-    const [bank, setBank] = useState(null)
-    const [loader, setLoader] = useState(false)
     const [amounto, setAmounto] = useState([])
-    const [acc, setAcc] = useState(null)
-    const [accountname, setAccountname] = useState('')
-    const [withdrawls, setWithdrawldata] = useState([])
     const [withdrawlo, setWithdrawldatao] = useState([])
     const [depositmin, setDeposit] = useState(null)
 
@@ -272,40 +259,40 @@ const Account = () => {
         const deposit = async () => {
 
             // Fetch the initial data (orders) from Supabase or any other source
-            const { data: depositForEach, error } = await supabase
-                .from("admin_deposit")
-                .select("*")
+            // const { data: depositForEach, error } = await supabase
+            //     .from("admin_deposit")
+            //     .select("*")
+
+            // if (error) {
+            //     console.log(error);
+            // } else {
+            /// setDepo(depositForEach)
+
+
+
+            const { data: recentDisabled, error } = await supabase
+                .from("panel")
+                .select("bigvalue")
+                .eq("owner", 779060335)
+
+
 
             if (error) {
                 console.log(error);
             } else {
-                setDepo(depositForEach)
+                setUserData((prevNotification) => ({
+                    ...prevNotification, // Spread the previous state
+                    recentDisabled: recentDisabled[0].bigvalue, // Append new value to the array
 
-
-
-                const { data: recentDisabled, error } = await supabase
-                    .from("panel")
-                    .select("bigvalue")
-                    .eq("owner", 779060335)
-
-
-
-                if (error) {
-                    console.log(error);
-                } else {
-                    setUserData((prevNotification) => ({
-                        ...prevNotification, // Spread the previous state
-                        recentDisabled: recentDisabled[0].bigvalue, // Append new value to the array
-
-                        // Update the `deposit` field
-                    }));
-                    console.log(recentDisabled[0].bigvalue)
-                }
-
-
-
-
+                    // Update the `deposit` field
+                }));
+                console.log(recentDisabled[0].bigvalue)
             }
+
+
+
+
+
         };
 
         deposit();
@@ -511,11 +498,6 @@ const Account = () => {
             console.error('Error updating bigvalue:', error.message);
         }
     }
-    const generateIframeSrc = () => {
-        return `https://paxyo.com/chapa.html?amount=1`;
-
-        // Return an empty string if the amount is not valid
-    };
 
     const send = async (mess) => {
 
@@ -598,30 +580,7 @@ const Account = () => {
         };
     }, []);
 
-    const addWithdrawl = async () => {
-        const wid = Math.floor(10000 + Math.random() * 90000); // generates a 5-digit random number
 
-        const { error: setError } = await supabase
-            .from('admin_withdrawl')
-            .insert([{
-                for: 779060335,
-                bank: bank,
-                a_name: accountname,
-                a_no: acc,
-                wid: wid,
-                amount: amount
-            }])
-
-
-        if (setError) {
-            console.error('Error fetching initial balance:', setError)
-        } else {
-            setWithdrawldata((prevWith) => (
-                [...prevWith, { status: 'Pending', date: new Date().toISOString(), wid: wid, for: userData.current, bank: bank, a_name: accountname, a_no: acc, amount: amount }]
-
-            ))
-        }
-    }
 
     const updateDeposit = async () => {
         const { error: findErrorB } = await supabase.from('panel').update({ minmax: depositmin }).eq('owner', 779060335).eq('key', 'minmax'); // Update all rows where `did` is greater than 0
@@ -700,7 +659,7 @@ const Account = () => {
                 </div>
                 <div className="p-2 h-fit ">
                     <Button onClick={async () => {
-                        setTg('')
+
                         setModalE(true)
                         const { data: depositForAdmin, error } = await supabase
 
@@ -1135,47 +1094,45 @@ const Account = () => {
                             <div className="amount-container">
 
 
-                                {loadingb && <MyLoader />}
 
-                                {!loadingb &&
-                                    <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
-                                        <thead>
-                                            <tr>
-                                                {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
+                                    <thead>
+                                        <tr>
+                                            {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 action
                                             </th> */}
-                                                {/* 
+                                            {/* 
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 status
                                             </th> */}
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    tid
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">date</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    amount
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    admin
-                                                </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                tid
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">date</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                amount
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                admin
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody className=" ">
+                                        {depoo.map((items, index) => (
+                                            <tr key={index}>
+
+                                                <td className="px-6 py-4 text-sm ">{items.tid}</td>
+
+                                                <td className="px-6 py-4 text-sm ">{items.date}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.amount}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.admin}</td>
 
                                             </tr>
-                                        </thead>
-                                        <tbody className=" ">
-                                            {depoo.map((items, index) => (
-                                                <tr key={index}>
+                                        ))}
+                                    </tbody>
+                                </table>
 
-                                                    <td className="px-6 py-4 text-sm ">{items.tid}</td>
-
-                                                    <td className="px-6 py-4 text-sm ">{items.date}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.amount}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.admin}</td>
-
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                }
 
                             </div>
                         </div>
@@ -1205,55 +1162,55 @@ const Account = () => {
 
                             <div className="amount-container">
 
-                                {!loader &&
-                                    <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
-                                        <thead>
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    action
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    status
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    wid
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    date
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">bank</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    account name
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">sccout number</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">father</th>
 
+                                <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
+                                    <thead>
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                action
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                status
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                wid
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                date
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">bank</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                account name
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">sccout number</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">father</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody className=" ">
+                                        {withdrawlo.map((items, index) => (
+                                            <tr key={index}>
+                                                <td className="px-6 py-4 text-sm">
+                                                    {items.status !== "Sent" && (
+                                                        <button onClick={() => sendDepositdf(items.wid)}>add</button>
+                                                    )}
+
+                                                </td>
+                                                <td className="px-6 py-4 text-sm">{items.status}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.wid}</td>
+
+                                                <td className="px-6 py-4 text-sm ">{items.amount}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.date}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.bank}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.a_name}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.a_no}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.for}</td>
                                             </tr>
-                                        </thead>
-                                        <tbody className=" ">
-                                            {withdrawlo.map((items, index) => (
-                                                <tr key={index}>
-                                                    <td className="px-6 py-4 text-sm">
-                                                        {items.status !== "Sent" && (
-                                                            <button onClick={() => sendDepositdf(items.wid)}>add</button>
-                                                        )}
+                                        ))}
+                                    </tbody>
+                                </table>
 
-                                                    </td>
-                                                    <td className="px-6 py-4 text-sm">{items.status}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.wid}</td>
-
-                                                    <td className="px-6 py-4 text-sm ">{items.amount}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.date}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.bank}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.a_name}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.a_no}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.for}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                }
 
                             </div>
                             <br />

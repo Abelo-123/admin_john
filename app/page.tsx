@@ -1,18 +1,13 @@
 "use client";
-import { useEffect } from "react";
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import { AppRoot } from '@telegram-apps/telegram-ui';// Adjust as necessary
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import Deposit from "./components/Deposit/page";
 import Smm from "./components/User/page";
 import Orders from './components/Orders/page';
-import Accounts from './components/Accounts/page';
 import React from "react";
-import { useUser } from "./components/UserContext";
-import { supabase } from "./lib/supabaseClient";
 import { useNot } from "./components/StatusContext";
 import { useActivePage } from './components/ActivePageContext';
-import John from "./components/John/page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from "@telegram-apps/telegram-ui";
 import MyLoader from "./components/Loader/page";
@@ -22,8 +17,6 @@ import Account from "./components/Account/page";
 
 const Telegram = () => {
   const { activePage } = useActivePage();
-  const { setUserData, userData } = useUser();
-
   const { useNotification, setNotification } = useNot();
   // useEffect(() => {
   //   // Load the Telegram Web App JavaScript SDK
