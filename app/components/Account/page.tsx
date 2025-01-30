@@ -936,9 +936,7 @@ const Account = () => {
                                 />
 
                                 <ul className="scrollable" style={{ height: '80%', overflowY: 'scroll', overflowX: 'hidden' }} >
-                                    {loading ? (
-                                        <li className="p-2 text-gray-500">Loading...</li>
-                                    ) : (
+                                    {
                                         filteredList.map((items, index) => (
                                             <li key={index}>
                                                 <div style={{ borderBottom: "1px solid black" }} className="w-full p-2">
@@ -962,7 +960,7 @@ const Account = () => {
                                                 </div>
                                             </li>
                                         ))
-                                    )}
+                                    }
 
                                 </ul>
 
@@ -1364,51 +1362,49 @@ const Account = () => {
                             <div className="amount-container">
 
 
-                                {loadingb && <MyLoader />}
 
-                                {!loadingb &&
-                                    <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
-                                        <thead>
-                                            <tr>
-                                                {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
+                                    <thead>
+                                        <tr>
+                                            {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 action
                                             </th> */}
-                                                {/* 
+                                            {/* 
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 status
                                             </th> */}
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    tid
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                    date
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Admin</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                tid
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                date
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Admin</th>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody className=" ">
-                                            {amounto.map((items, index) => (
-                                                <tr key={index}>
-                                                    {/* <td className="px-6 py-4 text-sm">
+                                        </tr>
+                                    </thead>
+                                    <tbody className=" ">
+                                        {amounto.map((items, index) => (
+                                            <tr key={index}>
+                                                {/* <td className="px-6 py-4 text-sm">
                                                     {items.status !== "Sent" && (
                                                         <button onClick={() => sendDeposita(items.tid)}>add</button>
                                                     )}
 
                                                 </td>                                            */}
-                                                    {/* <td className="px-6 py-4 text-sm">{items.status}</td> */}
-                                                    <td className="px-6 py-4 text-sm ">{items.tid}</td>
+                                                {/* <td className="px-6 py-4 text-sm">{items.status}</td> */}
+                                                <td className="px-6 py-4 text-sm ">{items.tid}</td>
 
-                                                    <td className="px-6 py-4 text-sm ">{items.amount}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.created_at}</td>
-                                                    <td className="px-6 py-4 text-sm ">{items.father}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.amount}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.created_at}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.father}</td>
 
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                }
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
 
                             </div>
                         </div>
