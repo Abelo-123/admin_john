@@ -5,7 +5,7 @@
 
 body {
   overflow-x: hidden;
-  background: var(--tgui--section_bg_color);
+  background: white;
 }
 
 .common-styles {

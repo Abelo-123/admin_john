@@ -634,7 +634,7 @@ const Account = () => {
                 <div className="p-2 h-fit  ">
                     <Button onClick={() => setModalA(true)} className="w-full">Message</Button>
                 </div>
-                <div className="p-2 h-fit ">
+                <div className="p-2 flex h-fit ">
                     <Button onClick={async () => {
                         setModalB(true)
                         const { data: fetchRate, error } = await supabase
@@ -651,12 +651,6 @@ const Account = () => {
                         }
 
                     }} className="w-full">Rate</Button>
-                </div>
-                <div className="p-2 h-fit ">
-                    <Button onClick={openModal} className="w-full">Disable</Button>
-                    <Button onClick={() => setModalD(true)} className="w-full mt-2">Enable</Button>
-                </div>
-                <div className="p-2 h-fit ">
                     <Button onClick={async () => {
 
                         setModalE(true)
@@ -672,6 +666,10 @@ const Account = () => {
                         }
                     }
                     } className="w-full">Deposit</Button>
+                </div>
+                <div className="p-2 h-fit ">
+                    <Button onClick={openModal} className="w-full">Disable</Button>
+                    <Button onClick={() => setModalD(true)} className="w-full mt-2">Enable</Button>
                 </div>
                 <div className="p-2 h-fit ">
                     <Button onClick={async () => {
