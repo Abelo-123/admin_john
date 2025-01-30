@@ -28,6 +28,22 @@ const Orders = () => {
                 setLoader(false)
 
             }
+             const channel = supabase
+            .channel("deposit_channelbb")
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "deposit" }, (payload) => {
+                //console.log("New order inserted:", payload.new);
+                // Add the new order to the state
+                setData((prevData) => [payload.new, ...prevData]);
+            })
+
+
+
+            .subscribe();
+
+        // Cleanup the subscription on component unmount
+        return () => {
+            channel.unsubscribe();
+        };
         };
 
         auth(); // Call the auth function when the component is mounted
@@ -68,10 +84,11 @@ const Orders = () => {
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 uid
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">pm</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">transaction</th>
 
+                                           
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                status
+                                                panel
                                             </th>
                                         </tr>
                                     </thead>
@@ -81,8 +98,8 @@ const Orders = () => {
                                                 <td className="px-6 py-4 text-sm ">{items.did}</td>
                                                 <td className="px-6 py-4 text-sm ">{items.amount}</td>
                                                 <td className="px-6 py-4 text-sm ">{items.uid}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.pm}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.status}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.transaction}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.father}</td>
                                             </tr>
                                         ))}
                                     </tbody>

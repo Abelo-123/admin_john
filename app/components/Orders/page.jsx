@@ -28,6 +28,42 @@ const Orders = () => {
                 setLoader(false)
 
             }
+
+            const channel = supabase
+            .channel("deposit_channelcccb")
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders"}, (payload) => {
+                //console.log("New order inserted:", payload.new);
+              //  if(payload.new.father === 7786592015){
+                // Add the new order to the state
+                setData((prevData) => [payload.new, ...prevData]);
+                
+            })
+            .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders"}, (payload) => {
+                //console.log("Order updated:", payload.new.status, "for oid", payload.new.oid);
+                // if (payload.new.uid == 5928771903) {
+                // Find the updated order in the current state
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.oid === payload.new.oid
+                            ? { ...item, status: payload.new.status, start_count: payload.new.start_from, remains: payload.new.remains } // Update the status in the state
+                            : item
+                    )
+                );
+
+                // If the updated order's status is not "Completed", call fetchOrderStatus
+                
+
+            })
+           
+
+
+
+            .subscribe();
+
+        // Cleanup the subscription on component unmount
+        return () => {
+            channel.unsubscribe();
+        };
         };
 
         auth(); // Call the auth function when the component is mounted
@@ -79,6 +115,7 @@ const Orders = () => {
                                             </th>
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">Service</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">Date</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">panel</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -93,6 +130,7 @@ const Orders = () => {
                                                 <td className="px-6 py-4 text-sm ">{items.charge}</td>
                                                 <td className="px-6 py-4 text-sm ">{items.service}</td>
                                                 <td className="px-6 py-4 text-sm ">{items.date}</td>
+                                                <td className="px-6 py-4 text-sm ">{items.father}</td>
                                             </tr>
                                         ))}
                                     </tbody>

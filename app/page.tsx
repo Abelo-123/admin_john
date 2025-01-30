@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from "@telegram-apps/telegram-ui";
 import MyLoader from "./components/Loader/page";
 import { faRotateBackward } from "@fortawesome/free-solid-svg-icons";
+import Account from "./components/Account/page";
 
 
 const Telegram = () => {
@@ -24,98 +25,99 @@ const Telegram = () => {
   const { setUserData, userData } = useUser();
 
   const { useNotification, setNotification } = useNot();
-  useEffect(() => {
-    // Load the Telegram Web App JavaScript SDK
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-web-app.js?2";
-    script.async = true;
-    document.body.appendChild(script);
+  // useEffect(() => {
+  //   // Load the Telegram Web App JavaScript SDK
+  //   const script = document.createElement("script");
+  //   script.src = "https://telegram.org/js/telegram-web-app.js?2";
+  //   script.async = true;
+  //   document.body.appendChild(script);
 
-    script.onload = () => {
-      const Telegram = window.Telegram;
+  //   script.onload = () => {
+  //     const Telegram = window.Telegram;
 
-      if (window.Telegram && window.Telegram.WebApp) {
-        Telegram.WebApp.expand() // Get the app version
-        const { user } = Telegram.WebApp.initDataUnsafe;
-        setUserData((prevNotification) => ({
-          ...prevNotification,
-          username: user.username,
-          firstName: user.first_name,
-          lastName: user.last_name,
-          userId: user.id,
-          profile: user.photo_url,
-          father: user.first_name
-        }));
-      }
+  //     if (window.Telegram && window.Telegram.WebApp) {
+  //       Telegram.WebApp.expand() // Get the app version
+  //       const { user } = Telegram.WebApp.initDataUnsafe;
+  //       setUserData((prevNotification) => ({
+  //         ...prevNotification,
+  //         username: user.username,
+  //         firstName: user.first_name,
+  //         lastName: user.last_name,
+  //         userId: user.id,
+  //         profile: user.photo_url,
+  //         father: user.first_name
+  //       }));
+  //     }
 
-    };
-
-
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  useEffect(() => {
-    const checkNot = async () => {
-      const { data } = await supabase
-        .from('adminmessage')
-        .select('message')
-        .eq('to', userData.userId)
-        .eq('seen', true)
+  //   };
 
 
 
-      if (data.length > 1) {
-        setNotification((prevNotification) => ({
-          ...prevNotification,
-          notificationLight: true,
-        }));
+  //   return () => {
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
 
-      } else {
-        //console.log("no data")
-      }
-    }
-    checkNot()
-
-
-    //status, trId  ,amount, date
-
-    const channel = supabase
-      .channel('adminmessage')
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "adminmessage" }, (payload) => {
-        //console.log("New order inserted:", payload.new);
-        // Add the new order to the state
-        if (Number(payload.new.to) === userData.userId && payload.new.seen === true) {
-          // console.log("New admin message for to=100:", payload.new);
-
-          // Update state or notify the user
-          setNotification((prevNotification) => ({
-            ...prevNotification,
-            notificationLight: true,
-          }));
-
-          // Optionally display a user-friendly toast
-          //showToast(`New message: ${payload.new.message}`);
-        }
-        // if (payload.new.seen === true) {
-        //   setNotification((prevNotification) => ({
-        //     ...prevNotification, // Spread the previous state
-        //     notificationLight: true
-        //     // Update the `deposit` field
-        //   }));
-        //   //  console.log(payload.new)
-        // }
-
-      })
-      .subscribe();
+  // useEffect(() => {
+  //   const checkNot = async () => {
+  //     const { data } = await supabase
+  //       .from('adminmessage')
+  //       .select('message')
+  //       .eq('to', 7786592015)
+  //       .eq('father', 6528707984)
+  //       .eq('seen', true)
 
 
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [])
+
+  //     if (data.length > 1) {
+  //       setNotification((prevNotification) => ({
+  //         ...prevNotification,
+  //         notificationLight: true,
+  //       }));
+
+  //     } else {
+  //       //console.log("no data")
+  //     }
+  //   }
+  //   checkNot()
+
+
+  //   //status, trId  ,amount, date
+
+  //   const channel = supabase
+  //     .channel('adminmessage')
+  //     .on("postgres_changes", { event: "INSERT", schema: "public", table: "adminmessage" }, (payload) => {
+  //       //console.log("New order inserted:", payload.new);
+  //       // Add the new order to the state
+  //       if ((Number(payload.new.for) === userData.userId || Number(payload.new.to) === userData.userId) && payload.new.seen === true) {
+  //         // console.log("New admin message for to=100:", payload.new);
+
+  //         // Update state or notify the user
+  //         setNotification((prevNotification) => ({
+  //           ...prevNotification,
+  //           notificationLight: true,
+  //         }));
+
+  //         // Optionally display a user-friendly toast
+  //         //showToast(`New message: ${payload.new.message}`);
+  //       }
+  //       // if (payload.new.seen === true) {
+  //       //   setNotification((prevNotification) => ({
+  //       //     ...prevNotification, // Spread the previous state
+  //       //     notificationLight: true
+  //       //     // Update the `deposit` field
+  //       //   }));
+  //       //   //  console.log(payload.new)
+  //       // }
+
+  //     })
+  //     .subscribe();
+
+
+  //   return () => {
+  //     channel.unsubscribe();
+  //   };
+  // }, [])
 
 
   return (
@@ -131,7 +133,7 @@ const Telegram = () => {
               }} className=" modal-popp fixed inset-0 top-0 bottom-0 w-screen ">
 
                 {useNotification.notificationLoader && <MyLoader style={{ marginTop: '2rem' }} />}
-                <div style={{ height: '85%' }} className='mt-24 '>
+                <div style={{ height: '85%' }} className='mt-2 '>
                   <div className="  w-screen " >
                     {
 
@@ -179,13 +181,14 @@ const Telegram = () => {
             id="3"
             className={`w-screen ${activePage === 3 ? '' : 'hidden  '} `}><Orders />
           </div>
-          <div
+
+          {/* <div
             id="4"
             className={`w-screen ${activePage === 4 ? '' : 'hidden  '} `}><Accounts />
-          </div>
+          </div> */}
           <div
             id="5"
-            className={`w-screen ${activePage === 5 ? '' : 'hidden  '} `}><John />
+            className={`w-screen ${activePage === 5 ? '' : 'hidden  '} `}><Account />
           </div>
 
         </div>
