@@ -91,7 +91,7 @@ const Orders = () => {
             <Section header="Orders">
                 <div style={{ width: "100%" }} className=" mx-auto">
                     {loader && <MyLoader />}
-                    <div style={{ borderRadius: "10px" }} className="scrollabler w-full overflow-x-auto">
+                    <div style={{ borderRadius: "10px",height: '29rem'  }} className="scrollabler w-full overflow-x-auto">
                         <ul>
                             {!loader &&
                                 <table style={{ width: "100%" }} className="   rounded-lg shadow-md">

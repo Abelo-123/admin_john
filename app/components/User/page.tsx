@@ -134,7 +134,8 @@ const Smm = () => {
                     </div>
                 </div>
             )}
-            <ul className="overflow-hidden">
+
+            <ul className="overflow-auto" style={{ height: '29rem' }}>
                 {filteredUsers.map((items, index) => (
                     <li key={index} className="block p-2" style={{ borderTop: '1px solid var(--tgui--header_bg_color)', borderBottom: '1px solid var(--tgui--header_bg_color)' }}>
                         <div className="flex">
@@ -237,6 +238,7 @@ const Smm = () => {
                     </li>
                 ))}
             </ul>
+
             {isModalOpen && (
                 <div
                     style={{ background: 'rgba(0, 0, 0,0.4)' }}

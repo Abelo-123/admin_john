@@ -1,11 +1,12 @@
 "use client"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "@/app/lib/supabaseClient"
 import { Button, Input, Select } from "@telegram-apps/telegram-ui"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from '../UserContext';
 import axios from "axios";
+import MyLoader from "../Loader/page";
 import Swal from "sweetalert2";
 
 const Account = () => {
@@ -29,47 +30,42 @@ const Account = () => {
     const [rate, setRate] = useState(null)
     const [allrate, setallRate] = useState(null)
     const [searchQuery, setSearchQuery] = useState("");
+    const [loading, setLoading] = useState(false); // Loading state
+    const [filteredServices, setFilteredServices] = useState([]);
     const [services, setService] = useState([])
     const [searchTerm, setSearchTerm] = useState("");
+    const [iframeVisible, setIframeVisible] = useState(false)
+    const [iframeKey, setIframeKey] = useState(0);
+    const [tg, setTg] = useState('')
+    const [depo, setDepo] = useState([])
     const [depoo, setDepoo] = useState([])
+    const [loadingb, setLoaderb] = useState(false)
+    const [amount, setAmount] = useState(null)
+    const [bank, setBank] = useState(null)
+    const [loader, setLoader] = useState(false)
     const [amounto, setAmounto] = useState([])
+    const [acc, setAcc] = useState(null)
+    const [accountname, setAccountname] = useState('')
+    const [withdrawls, setWithdrawldata] = useState([])
     const [withdrawlo, setWithdrawldatao] = useState([])
     const [depositmin, setDeposit] = useState(null)
 
     const [rr, setRr] = useState(null)
     const [mm, setMm] = useState(null)
     const [arr, setAllrate] = useState(null)
-    const [loadingc, setLoadingc] = useState(false);
-
-    const [loadingIndex, setLoadingIndex] = useState(null); // Track which button is loading
-    const [loadingIndexb, setLoadingIndexb] = useState(null); // Track which button is loading
-
-
     const sendAdminMessage = async () => {
         setIndi(null)
         if (!adminMessageFor && !adminMessageFor2 && all == "admin") { //all admin
 
-            const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('to', 'Admin').eq('father', 779060335); // Update all rows where `did` is greater than 0
+            const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('to', 'Admin').eq('father', 6528707984); // Update all rows where `did` is greater than 0
             if (findErrorB) {
                 console.error(findErrorB.message)
             } else {
+                window.alert("sending all admin")
                 setAdminMessageFor('')
                 setAdminMessageFor2('')
                 setAdminMessage('')
                 setAll('')
-                setModalA(false)
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Message sent to all admin.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        popup: 'swal2-popup',    // Apply the custom class to the popup
-                        title: 'swal2-title',    // Apply the custom class to the title
-                        confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                        cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                    }
-                });
             }
 
         } else if (!adminMessageFor && adminMessageFor2) { //specific user
@@ -92,11 +88,11 @@ const Account = () => {
                             message: adminMessage, // Replace with your dynamic value if needed
                             for: adminMessageFor2, // Replace with the desired value for the "for" column
                             from: "Admin",
-                            father: 779060335,
+                            father: 6528707984,
                         }
                     ]);
                 if (!error) {
-                    const { error: findErrorB } = await supabase.from('adminmessage').update({ seen: true }).eq('for', adminMessageFor).eq('father', 779060335).gt('id', 0); // Update all rows where `did` is greater than 0
+                    const { error: findErrorB } = await supabase.from('adminmessage').update({ seen: true }).eq('for', adminMessageFor).eq('father', 6528707984).gt('id', 0); // Update all rows where `did` is greater than 0
                     if (findErrorB) {
                         console.error(findErrorB.message)
                     } else {
@@ -105,19 +101,6 @@ const Account = () => {
                         setAdminMessageFor2('')
                         setAdminMessage('')
                         setAll('')
-                        setModalA(false)
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Message sent to admin.',
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                            customClass: {
-                                popup: 'swal2-popup',    // Apply the custom class to the popup
-                                title: 'swal2-title',    // Apply the custom class to the title
-                                confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                                cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                            }
-                        })
                     }
                 }
             }
@@ -130,53 +113,30 @@ const Account = () => {
                         from: "Admin", // Replace with the desired value for the "from" column
                         to: adminMessageFor,
                         seen: true,
-                        father: 779060335
+                        father: 6528707984
                     }
                 ]);
 
             if (error) {
                 console.error("Error inserting into adminmessage:", error);
             } else {
+                window.alert("sendind specific admin")
                 setAdminMessageFor('')
                 setAdminMessageFor2('')
                 setAdminMessage('')
                 setAll('')
-                setModalA(false)
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Message sent to admin.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        popup: 'swal2-popup',    // Apply the custom class to the popup
-                        title: 'swal2-title',    // Apply the custom class to the title
-                        confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                        cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                    }
-                })
             }
         } else if (!adminMessageFor && !adminMessageFor2 && all == "user") { //all use
-            const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('father', 779060335).eq('to', 'User').eq('for', 'all'); // Update all rows where `did` is greater than 0
+            const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('father', 6528707984).eq('to', 'User').eq('for', 'all'); // Update all rows where `did` is greater than 0
             if (findErrorB) {
                 console.error(findErrorB.message)
             } else {
+                window.alert("sending all users")
                 setAdminMessageFor('')
                 setAdminMessageFor2('')
                 setAdminMessage('')
                 setAll('')
                 setModalA(false)
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Message sent to all user.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        popup: 'swal2-popup',    // Apply the custom class to the popup
-                        title: 'swal2-title',    // Apply the custom class to the title
-                        confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                        cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                    }
-                })
             }
         }
         // else if (!adminMessageFor && !adminMessageFor2 && all == "adminuser") { //all user and admin
@@ -213,23 +173,11 @@ const Account = () => {
 
     }
     const updateRate = async () => {
-        const { error: findErrorC } = await supabase.from('panel').update({ value: rate }).eq('owner', 779060335).eq('key', 'rate'); // Update all rows where `did` is greater than 0
+        const { error: findErrorC } = await supabase.from('panel').update({ value: rate }).eq('owner', 6528707984).eq('key', 'rate'); // Update all rows where `did` is greater than 0
         if (findErrorC) {
             console.error(findErrorC.message)
         } else {
-            setModalB(false)
-            Swal.fire({
-                title: 'Success!',
-                text: 'Rate updated.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'swal2-popup',    // Apply the custom class to the popup
-                    title: 'swal2-title',    // Apply the custom class to the title
-                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                }
-            });
+            console.log("updated")
         }
     }
     const updateAllRate = async () => {
@@ -238,19 +186,8 @@ const Account = () => {
             console.error(findErrorC.message)
         } else {
             setallRate(null)
-            setModalH(false)
-            Swal.fire({
-                title: 'Success!',
-                text: 'All rate updated.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'swal2-popup',    // Apply the custom class to the popup
-                    title: 'swal2-title',    // Apply the custom class to the title
-                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                }
-            });
+
+            console.log("updated")
         }
     }
 
@@ -258,69 +195,60 @@ const Account = () => {
         const deposit = async () => {
 
             // Fetch the initial data (orders) from Supabase or any other source
-            // const { data: depositForEach, error } = await supabase
-            //     .from("admin_deposit")
-            //     .select("*")
-
-            // if (error) {
-            //     console.log(error);
-            // } else {
-            /// setDepo(depositForEach)
-
-
-
-            const { data: recentDisabled, error } = await supabase
-                .from("panel")
-                .select("bigvalue")
-                .eq("owner", 779060335)
-
-
+            const { data: depositForEach, error } = await supabase
+                .from("admin_deposit")
+                .select("*")
 
             if (error) {
                 console.log(error);
             } else {
-                setUserData((prevNotification) => ({
-                    ...prevNotification, // Spread the previous state
-                    recentDisabled: recentDisabled[0].bigvalue, // Append new value to the array
+                setDepo(depositForEach)
 
-                    // Update the `deposit` field
-                }));
-                console.log(recentDisabled[0].bigvalue)
+
+
+                const { data: recentDisabled, error } = await supabase
+                    .from("panel")
+                    .select("bigvalue")
+                    .eq("owner", 6528707984)
+
+
+
+                if (error) {
+                    console.log(error);
+                } else {
+                    setUserData((prevNotification) => ({
+                        ...prevNotification, // Spread the previous state
+                        recentDisabled: recentDisabled[0].bigvalue, // Append new value to the array
+
+                        // Update the `deposit` field
+                    }));
+                    console.log(recentDisabled[0].bigvalue)
+                }
+
+
+
+
             }
-
-
-
-
-
         };
 
         deposit();
     }, [])
 
 
-    const filteredList = useMemo(() => {
-        const disabledArray = new Set(String(userData.recentDisabled || "").split(","));
+    useEffect(() => {
+        // Filter services whenever the search query changes
+        setLoading(true);
+        const timer = setTimeout(() => {
+            const filtered = services.filter((items) =>
+                items.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                String(items.service).toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setFilteredServices(filtered);
+            setLoading(false);
+        }, 100); // Debounce for better performance
 
-        const filtered = services
-            .filter((item) => {
-                const isNotDisabled = !disabledArray.has(String(item.service));
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    String(item.service).toLowerCase().includes(searchQuery.toLowerCase());
-                return isNotDisabled && matchesSearch;
-            })
-            .sort((a, b) => {
-                // Check for exact match first
-                const aExact = String(a.service) === searchQuery || a.name.toLowerCase() === searchQuery.toLowerCase();
-                const bExact = String(b.service) === searchQuery || b.name.toLowerCase() === searchQuery.toLowerCase();
-
-                if (aExact && !bExact) return -1; // Move `a` to the top
-                if (!aExact && bExact) return 1; // Move `b` to the top
-                return 0; // Otherwise, keep order
-            });
-
-        return filtered;
-    }, [services, userData.recentDisabled, searchQuery]); // Dependencies
-
+        return () => clearTimeout(timer);
+    }, [searchQuery, services]);
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -339,6 +267,8 @@ const Account = () => {
 
         fetchServices();
     }, []);
+
+
 
     useEffect(() => {
         supabase
@@ -407,7 +337,7 @@ const Account = () => {
                 .from('panel')
                 .select('bigvalue')
                 .eq('key', 'disabled')
-                .eq('owner', 779060335)// Filter based on the 'father' or any other condition
+                .eq('owner', 6528707984)// Filter based on the 'father' or any other condition
                 .single();
 
             if (error) {
@@ -431,7 +361,7 @@ const Account = () => {
             const { error: updateError } = await supabase
                 .from('panel')
                 .update({ bigvalue: updatedBigValue })
-                .eq('owner', 779060335)// Filter by correct row
+                .eq('owner', 6528707984)// Filter by correct row
 
             if (updateError) {
                 console.error('Error updating bigvalue:', updateError);
@@ -486,7 +416,7 @@ const Account = () => {
             const { error: updateError } = await supabase
                 .from('panel')
                 .update({ bigvalue: updatedValue })
-                .eq('owner', 779060335)
+                .eq('owner', 6528707984)
                 .eq('key', 'disabled')
 
             if (updateError) throw updateError;
@@ -497,6 +427,11 @@ const Account = () => {
             console.error('Error updating bigvalue:', error.message);
         }
     }
+    const generateIframeSrc = () => {
+        return `https://paxyo.com/chapa.html?amount=1`;
+
+        // Return an empty string if the amount is not valid
+    };
 
     const send = async (mess) => {
 
@@ -579,26 +514,37 @@ const Account = () => {
         };
     }, []);
 
+    const addWithdrawl = async () => {
+        const wid = Math.floor(10000 + Math.random() * 90000); // generates a 5-digit random number
 
+        const { error: setError } = await supabase
+            .from('admin_withdrawl')
+            .insert([{
+                for: 7786592015,
+                bank: bank,
+                a_name: accountname,
+                a_no: acc,
+                wid: wid,
+                amount: amount
+            }])
+
+
+        if (setError) {
+            console.error('Error fetching initial balance:', setError)
+        } else {
+            setWithdrawldata((prevWith) => (
+                [...prevWith, { status: 'Pending', date: new Date().toISOString(), wid: wid, for: userData.current, bank: bank, a_name: accountname, a_no: acc, amount: amount }]
+
+            ))
+        }
+    }
 
     const updateDeposit = async () => {
-        const { error: findErrorB } = await supabase.from('panel').update({ minmax: depositmin }).eq('owner', 779060335).eq('key', 'minmax'); // Update all rows where `did` is greater than 0
+        const { error: findErrorB } = await supabase.from('panel').update({ minmax: depositmin }).eq('owner', 6528707984).eq('key', 'minmax'); // Update all rows where `did` is greater than 0
         if (findErrorB) {
             console.error(findErrorB.message)
         } else {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Minimum Deposit updated.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'swal2-popup',    // Apply the custom class to the popup
-                    title: 'swal2-title',    // Apply the custom class to the title
-                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                }
-            });
-            setModalG(false)
+            // alert("ola")
         }
     }
 
@@ -619,28 +565,20 @@ const Account = () => {
     }
 
 
-    const openModal = () => {
-        setLoadingc(true); // Show the spinner
-        setModalC(true);
-
-        // Simulate a short delay (you can remove this if unnecessary)
-    };
-
-
     return (
         <>
 
             <div className="grid  gap-2 grid-row-2  px-12 w-full p-2">
-                <div className="p-2 h-fit  ">
+                <div className="p-2 h-fit   ">
                     <Button onClick={() => setModalA(true)} className="w-full">Message</Button>
                 </div>
-                <div className="p-2 flex h-fit ">
+                <div className="p-2 h-fit ">
                     <Button onClick={async () => {
                         setModalB(true)
                         const { data: fetchRate, error } = await supabase
                             .from("panel")
                             .select("value")
-                            .eq('owner', 779060335)
+                            .eq('owner', 6528707984)
                             .eq('key', 'rate')
 
 
@@ -651,8 +589,14 @@ const Account = () => {
                         }
 
                     }} className="w-full">Rate</Button>
+                </div>
+                <div className="p-2 h-fit  ">
+                    <Button onClick={() => setModalC(true)} className="w-full">Disable</Button>
+                    <Button onClick={() => setModalD(true)} className="w-full mt-2">Enable</Button>
+                </div>
+                <div className="p-2 h-fit ">
                     <Button onClick={async () => {
-
+                        setTg('')
                         setModalE(true)
                         const { data: depositForAdmin, error } = await supabase
 
@@ -667,11 +611,7 @@ const Account = () => {
                     }
                     } className="w-full">Deposit</Button>
                 </div>
-                <div className="p-2 h-fit ">
-                    <Button onClick={openModal} className="w-full">Disable</Button>
-                    <Button onClick={() => setModalD(true)} className="w-full mt-2">Enable</Button>
-                </div>
-                <div className="p-2 h-fit ">
+                <div className="p-2 h-fit  ">
                     <Button onClick={async () => {
                         setModalF(true)
                         const { data: withdrawlForAdmin, error } = await supabase
@@ -686,7 +626,7 @@ const Account = () => {
                     }
                     } className="w-full">Withdrawl</Button>
                 </div>
-                <div className="p-2 h-fit ">
+                <div className="p-2 h-fit  ">
                     <Button onClick={async () => {
                         const { data: amountForAdmin, error } = await supabase
                             .from("admin_amount")
@@ -704,22 +644,16 @@ const Account = () => {
                 <div className="p-2 h-fit ">
                     <Button onClick={async () => {
                         setModalG(true)
-                        const { data: fetchMinmax, error } = await supabase
+                        const { data: fetchRate, error } = await supabase
                             .from("panel")
                             .select("minmax")
-                            .eq('owner', 779060335)
+                            .eq('owner', 6528707984)
 
 
                         if (error) {
                             console.log(error);
                         } else {
-                            const validMinmax = fetchMinmax
-                                .map(item => item.minmax)
-                                .filter(value => value !== null && !isNaN(value)); // Ensure it's numeric
-
-                            if (validMinmax.length > 0) {
-                                setMm(validMinmax[0]); // Set the first valid number
-                            }
+                            setMm(fetchRate[0].minmax)
                         }
                     }} className="w-full">min Deposit</Button>
                 </div>
@@ -728,7 +662,7 @@ const Account = () => {
                         const { data: fetchRate, error } = await supabase
                             .from("panel")
                             .select("allrate")
-                            .eq('owner', 779060335)
+                            .eq('owner', 6528707984)
 
 
 
@@ -889,17 +823,12 @@ const Account = () => {
                     </div>
                 )
             }
-            {loadingc && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <FontAwesomeIcon icon={faRefresh} className="text-white animate-spin text-white text-4xl" />
-                </div>
-            )}
             {
                 modalC && (
                     <div
                         className="fixed  modal-pops inset-0  h-screen bg-black bg-opacity-75 grid content-center z-50"
                         onClick={() => {
-                            setLoadingc(false)
+
                             setModalC(false)
                         }}
                     >
@@ -913,7 +842,7 @@ const Account = () => {
 
                                 className=" text-gray-500 absolute m-2 right-4 top-2 px-4 py-3 rounded-md"
                                 onClick={() => {
-                                    setLoadingc(false)
+
                                     setModalC(false)
                                 }}
                             >
@@ -933,31 +862,31 @@ const Account = () => {
                                 />
 
                                 <ul className="scrollable" style={{ height: '80%', overflowY: 'scroll', overflowX: 'hidden' }} >
-                                    {
-                                        filteredList.map((items, index) => (
-                                            <li key={index}>
-                                                <div style={{ borderBottom: "1px solid black" }} className="w-full p-2">
-                                                    {items.service} {items.name}
-                                                    <Button
-                                                        className="px-6 p-2 ml-4 text-white"
-                                                        onClick={() => {
-                                                            handleDisable(items.service);
-                                                            setLoadingIndex(index); // Set loading state when clicked
-                                                        }}
-                                                        disabled={loadingIndex === index} // Disable only the clicked button
+                                    {loading ? (
+                                        <li className="p-2 text-gray-500">Loading...</li>
+                                    ) : (
+                                        filteredServices
+                                            .filter((items) => {
+                                                const disabledArray = String(userData.recentDisabled || '').split(',');
+                                                return !disabledArray.includes(String(items.service));
+                                            })
+                                            .map((items, index) => (
+                                                <li key={index}>
+                                                    <div
+                                                        style={{ borderBottom: '1px solid black' }}
+                                                        className="w-full p-2"
                                                     >
-                                                        {loadingIndex === index ? (
-                                                            <span className="flex items-center">
-                                                                <FontAwesomeIcon icon={faRefresh} className="animate-spin mr-2" /> Wait...
-                                                            </span>
-                                                        ) : (
-                                                            "Disable"
-                                                        )}
-                                                    </Button>
-                                                </div>
-                                            </li>
-                                        ))
-                                    }
+                                                        {items.service} {items.name}
+                                                        <Button
+                                                            className="px-6 p-2 ml-4 text-white"
+                                                            onClick={() => handleDisable(items.service)}
+                                                        >
+                                                            Disable
+                                                        </Button>
+                                                    </div>
+                                                </li>
+                                            ))
+                                    )}
 
                                 </ul>
 
@@ -1025,30 +954,16 @@ const Account = () => {
                                                         className="w-full p-2"
                                                     >
                                                         {serviceId} - {getServiceName(serviceId)}
-
-
-
                                                         <Button
                                                             className="px-6 p-2 ml-4 text-white"
-                                                            onClick={() => {
-                                                                handleEnable(serviceId)
-                                                                setLoadingIndexb(serviceId); // Set loading state when clicked
-                                                            }}
-                                                            disabled={loadingIndexb === index} // Disable only the clicked button
+                                                            onClick={() => handleEnable(serviceId)}
                                                         >
-                                                            {loadingIndexb === serviceId ? (
-                                                                <span className="flex items-center">
-                                                                    <FontAwesomeIcon icon={faRefresh} className="animate-spin mr-2" /> Wait...
-                                                                </span>
-                                                            ) : (
-                                                                "Enable"
-                                                            )}
+                                                            Enable
                                                         </Button>
                                                     </div>
                                                 </div>
                                             </li>
                                         ))}
-
 
                                 </ul>
 
@@ -1086,48 +1001,50 @@ const Account = () => {
                             </div>
                             <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
 
-                            <div className="amount-container">
+                            <div style={{ overflow: 'auto' }} className="scrollable amount-container">
 
 
+                                {loadingb && <MyLoader />}
 
-                                <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
-                                    <thead>
-                                        <tr>
-                                            {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                {!loadingb &&
+                                    <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
+                                        <thead>
+                                            <tr>
+                                                {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 action
                                             </th> */}
-                                            {/* 
+                                                {/* 
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 status
                                             </th> */}
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                tid
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">date</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                amount
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                admin
-                                            </th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody className=" ">
-                                        {depoo.map((items, index) => (
-                                            <tr key={index}>
-
-                                                <td className="px-6 py-4 text-sm ">{items.tid}</td>
-
-                                                <td className="px-6 py-4 text-sm ">{items.date}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.amount}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.admin}</td>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    tid
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    amount
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    admin
+                                                </th>
 
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className=" ">
+                                            {depoo.map((items, index) => (
+                                                <tr key={index}>
 
+                                                    <td className="px-6 py-4 text-sm ">{items.tid}</td>
+
+                                                    <td className="px-6 py-4 text-sm ">{items.date}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.amount}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.admin}</td>
+
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                }
 
                             </div>
                         </div>
@@ -1155,57 +1072,57 @@ const Account = () => {
                             </div>
                             <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
 
-                            <div className="amount-container">
+                            <div style={{ overflow: 'auto' }} className="scrollable amount-container">
 
+                                {!loader &&
+                                    <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
+                                        <thead>
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    action
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    status
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    wid
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    date
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">bank</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    account name
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">sccout number</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">father</th>
 
-                                <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
-                                    <thead>
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                action
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                status
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                wid
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                date
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">bank</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                account name
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">sccout number</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">father</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody className=" ">
-                                        {withdrawlo.map((items, index) => (
-                                            <tr key={index}>
-                                                <td className="px-6 py-4 text-sm">
-                                                    {items.status !== "Sent" && (
-                                                        <button onClick={() => sendDepositdf(items.wid)}>add</button>
-                                                    )}
-
-                                                </td>
-                                                <td className="px-6 py-4 text-sm">{items.status}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.wid}</td>
-
-                                                <td className="px-6 py-4 text-sm ">{items.amount}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.date}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.bank}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.a_name}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.a_no}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.for}</td>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className=" ">
+                                            {withdrawlo.map((items, index) => (
+                                                <tr key={index}>
+                                                    <td className="px-6 py-4 text-sm">
+                                                        {items.status !== "Sent" && (
+                                                            <button onClick={() => sendDepositdf(items.wid)}>add</button>
+                                                        )}
 
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm">{items.status}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.wid}</td>
+
+                                                    <td className="px-6 py-4 text-sm ">{items.amount}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.date}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.bank}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.a_name}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.a_no}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.for}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                }
 
                             </div>
                             <br />
@@ -1356,52 +1273,54 @@ const Account = () => {
                             </div>
                             <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
 
-                            <div className="amount-container">
+                            <div style={{ overflow: 'auto' }} className="scrollable amount-container">
 
 
+                                {loadingb && <MyLoader />}
 
-                                <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
-                                    <thead>
-                                        <tr>
-                                            {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                {!loadingb &&
+                                    <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
+                                        <thead>
+                                            <tr>
+                                                {/* <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 action
                                             </th> */}
-                                            {/* 
+                                                {/* 
                                             <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                                 status
                                             </th> */}
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                tid
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                                date
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Admin</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    tid
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">amount</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                                    date
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Admin</th>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody className=" ">
-                                        {amounto.map((items, index) => (
-                                            <tr key={index}>
-                                                {/* <td className="px-6 py-4 text-sm">
+                                            </tr>
+                                        </thead>
+                                        <tbody className=" ">
+                                            {amounto.map((items, index) => (
+                                                <tr key={index}>
+                                                    {/* <td className="px-6 py-4 text-sm">
                                                     {items.status !== "Sent" && (
                                                         <button onClick={() => sendDeposita(items.tid)}>add</button>
                                                     )}
 
                                                 </td>                                            */}
-                                                {/* <td className="px-6 py-4 text-sm">{items.status}</td> */}
-                                                <td className="px-6 py-4 text-sm ">{items.tid}</td>
+                                                    {/* <td className="px-6 py-4 text-sm">{items.status}</td> */}
+                                                    <td className="px-6 py-4 text-sm ">{items.tid}</td>
 
-                                                <td className="px-6 py-4 text-sm ">{items.amount}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.created_at}</td>
-                                                <td className="px-6 py-4 text-sm ">{items.father}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.amount}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.created_at}</td>
+                                                    <td className="px-6 py-4 text-sm ">{items.father}</td>
 
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                }
 
                             </div>
                         </div>
