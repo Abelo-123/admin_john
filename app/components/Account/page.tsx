@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { supabase } from "@/app/lib/supabaseClient"
 import { Button, Input, Select } from "@telegram-apps/telegram-ui"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from '../UserContext';
 import axios from "axios";
 import MyLoader from "../Loader/page";
@@ -34,33 +34,19 @@ const Account = () => {
     const [filteredServices, setFilteredServices] = useState([]);
     const [services, setService] = useState([])
     const [searchTerm, setSearchTerm] = useState("");
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [iframeVisible, setIframeVisible] = useState(false)
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [iframeKey, setIframeKey] = useState(0);
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [tg, setTg] = useState('')
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [depo, setDepo] = useState([])
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [depoo, setDepoo] = useState([])
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [loadingb, setLoaderb] = useState(false)
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [amount, setAmount] = useState(null)
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [bank, setBank] = useState(null)
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [loader, setLoader] = useState(false)
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [amounto, setAmounto] = useState([])
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [acc, setAcc] = useState(null)
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [accountname, setAccountname] = useState('')
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [withdrawls, setWithdrawldata] = useState([])
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const [withdrawlo, setWithdrawldatao] = useState([])
     const [depositmin, setDeposit] = useState(null)
 
@@ -191,7 +177,20 @@ const Account = () => {
         if (findErrorC) {
             console.error(findErrorC.message)
         } else {
-            console.log("updated")
+            Swal.fire({
+                title: 'Success!',
+                text: 'Update Rate.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
+            setModalB(false)
+
         }
     }
     const updateAllRate = async () => {
@@ -201,7 +200,19 @@ const Account = () => {
         } else {
             setallRate(null)
 
-            console.log("updated")
+            Swal.fire({
+                title: 'Success!',
+                text: 'Update Rate.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
+            setModalH(false)
         }
     }
 
@@ -558,7 +569,19 @@ const Account = () => {
         if (findErrorB) {
             console.error(findErrorB.message)
         } else {
-            // alert("ola")
+            Swal.fire({
+                title: 'Success!',
+                text: 'Minimum deposit updated.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
+            setModalG(false)
         }
     }
 
@@ -582,8 +605,8 @@ const Account = () => {
     return (
         <>
 
-            <div className="grid  gap-2 grid-row-2  px-12 w-full p-2">
-                <div className="p-2 h-fit   ">
+            <div className="grid  gap-2 grid-row-2  px-12 w-full p-2 ">
+                <div className="p-2 h-fit  ">
                     <Button onClick={() => setModalA(true)} className="w-full">Message</Button>
                 </div>
                 <div className="p-2 h-fit ">
@@ -604,11 +627,11 @@ const Account = () => {
 
                     }} className="w-full">Rate</Button>
                 </div>
-                <div className="p-2 h-fit  ">
+                <div className="p-2 h-fit flex gap-2">
                     <Button onClick={() => setModalC(true)} className="w-full">Disable</Button>
-                    <Button onClick={() => setModalD(true)} className="w-full mt-2">Enable</Button>
+                    <Button onClick={() => setModalD(true)} className="w-full ">Enable</Button>
                 </div>
-                <div className="p-2 h-fit ">
+                <div className="p-2 flex gap-2 h-fit">
                     <Button onClick={async () => {
                         setTg('')
                         setModalE(true)
@@ -623,9 +646,7 @@ const Account = () => {
                             setDepoo(depositForAdmin)
                         }
                     }
-                    } className="w-full">Deposit</Button>
-                </div>
-                <div className="p-2 h-fit  ">
+                    } className="w-full">Monthly Deposit</Button>
                     <Button onClick={async () => {
                         setModalF(true)
                         const { data: withdrawlForAdmin, error } = await supabase
@@ -667,7 +688,15 @@ const Account = () => {
                         if (error) {
                             console.log(error);
                         } else {
-                            setMm(fetchRate[0].minmax)
+                            const validMinmax = fetchRate
+                                .map(item => item.minmax)
+                                .filter(value => value !== null && !isNaN(value)); // Ensure it's numeric
+
+                            if (validMinmax.length > 0) {
+
+                                setMm(validMinmax[0]); // Set the first valid number
+                            }
+
                         }
                     }} className="w-full">min Deposit</Button>
                 </div>
@@ -686,7 +715,7 @@ const Account = () => {
                             setAllrate(fetchRate[0].allrate)
                         }
                         setModalH(true)
-                    }} className="w-full">Rate</Button>
+                    }} className="w-full">All Rate</Button>
                 </div>
 
             </div >
@@ -715,7 +744,7 @@ const Account = () => {
                         >
                             <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                         </div>
-                        <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                        <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Message</h2>
 
                         <div className="amount-container">
 
@@ -726,17 +755,8 @@ const Account = () => {
                             }}>
                                 <option value="">ID</option>
                                 <option>admin</option>
-                                <option>user</option>
                             </Select>
 
-                            {!indi && (<Input
-                                header="UserID"
-                                type="number"
-                                className="w-full"
-                                placeholder="Enter user's id"
-                                onChange={(e) => setAdminMessageFor2(e.target.value)}
-                                value={adminMessageFor2}
-                            />)}
 
                             {!indi && (<Input
                                 header="AdminID"
@@ -803,7 +823,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Update Rate</h2>
 
                             <div className="amount-container">
 
@@ -862,7 +882,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Disable</h2>
 
                             <div style={{ height: '42rem' }} className="amount-container">
 
@@ -935,7 +955,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Enable</h2>
 
                             <div style={{ height: '42rem' }} className="amount-container">
 
@@ -1013,9 +1033,9 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Monthly deposits</h2>
 
-                            <div style={{ overflow: 'auto' }} className="scrollable amount-container">
+                            <div className="scrollabler amount-container">
 
 
                                 {loadingb && <MyLoader />}
@@ -1084,9 +1104,9 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Withdrawls</h2>
 
-                            <div style={{ overflow: 'auto' }} className="scrollable amount-container">
+                            <div className="scrollabler amount-container">
 
                                 {!loader &&
                                     <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
@@ -1170,7 +1190,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Minimum Deposit</h2>
 
                             <div className="amount-container">
 
@@ -1195,6 +1215,7 @@ const Account = () => {
                                 >
                                     {/* {(ag && again) ? "Try Again" : "Continue"} */}
                                     Set
+
                                 </Button>
 
 
@@ -1227,7 +1248,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Update Rate</h2>
 
                             <div className="amount-container">
 
@@ -1285,9 +1306,9 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Make Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Amounts</h2>
 
-                            <div style={{ overflow: 'auto' }} className="scrollable amount-container">
+                            <div className="scrollabler amount-container">
 
 
                                 {loadingb && <MyLoader />}

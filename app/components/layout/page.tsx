@@ -27,7 +27,7 @@ const Lays = () => {
                 .from('adminmessage')
                 .select('message')
                 .eq('to', 'Admin')
-                .eq('father', 779060335)
+                .eq('father', 6528707984)
                 .single()
 
             if (setError) {

@@ -8,6 +8,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { supabase } from "@/app/lib/supabaseClient";
 import { useEffect, useState, useCallback } from "react";
 import { Avatar, Input } from '@telegram-apps/telegram-ui'; // Adjust as necessary
+import Swal from "sweetalert2";
 //import { useUser } from "../UserContext";
 
 const Smm = () => {
@@ -60,7 +61,7 @@ const Smm = () => {
                         seen: true,
                         message: message,
                         for: messageId,
-                        father: 779060335,
+                        father: 6528707984,
                         from: "Admin",
                     }
                 ]);
@@ -79,6 +80,25 @@ const Smm = () => {
                 .eq("id", messageId);
             if (error) throw error;
             setShowBox(0);
+
+            setUsers((prevUsers) =>
+                prevUsers.map(user =>
+                    user.id === messageId ? { ...user, balance: bala } : user
+                )
+            );
+            setBala(null)
+            Swal.fire({
+                title: 'Success!',
+                text: 'Balance updated.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
         } catch (error) {
             console.error("Error updating balance:", error.message);
         }
@@ -174,7 +194,7 @@ const Smm = () => {
                                     </button>
                                 )}
                                 <button
-                                    style={{ fontSize: '0.8rem' }}
+                                    style={{ display: items.father === 6528707984 ? "flex" : "none", fontSize: '0.8rem' }}
                                     onClick={() => {
                                         setIsModalOpen(true);
                                         setMessageId(items.id);
