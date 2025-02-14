@@ -6,7 +6,7 @@ import { ActivePageProvider } from "./components/ActivePageContext"
 import { UserProvider } from "./components/UserContext"
 import { UserNotProvider } from "./components/StatusContext"
 import Tab from './components/tab/page';
-import Lays from './components/layout/page';
+//import Lays from './components/layout/page';
 import { AppRoot } from "@telegram-apps/telegram-ui";
 import { NextTWAProvider } from 'next-twa';
 //import { supabase } from "./lib/supabaseClient";
