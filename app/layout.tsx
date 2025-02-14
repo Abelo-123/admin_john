@@ -66,7 +66,6 @@ export default function RootLayout({
               <UserNotProvider>
                 <AppRoot>
 
-                  <Lays />
 
                   {children}
                   <Tab />

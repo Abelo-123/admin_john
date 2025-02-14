@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { supabase } from "@/app/lib/supabaseClient"
 import { Button, Input, Select } from "@telegram-apps/telegram-ui"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from '../UserContext';
 import axios from "axios";
 import MyLoader from "../Loader/page";
@@ -63,23 +63,38 @@ const Account = () => {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const [withdrawlo, setWithdrawldatao] = useState([])
     const [depositmin, setDeposit] = useState(null)
+    const [loadingc, setLoadingc] = useState(false);
 
     const [rr, setRr] = useState(null)
     const [mm, setMm] = useState(null)
     const [arr, setAllrate] = useState(null)
     const sendAdminMessage = async () => {
         setIndi(null)
+        setLoadingc(true);
         if (!adminMessageFor && !adminMessageFor2 && all == "admin") { //all admin
 
             const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('to', 'Admin').eq('father', 6528707984); // Update all rows where `did` is greater than 0
             if (findErrorB) {
                 console.error(findErrorB.message)
             } else {
-                window.alert("sending all admin")
                 setAdminMessageFor('')
                 setAdminMessageFor2('')
                 setAdminMessage('')
                 setAll('')
+                setModalA(false);
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Message sent to all admin.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'swal2-popup',    // Apply the custom class to the popup
+                        title: 'swal2-title',    // Apply the custom class to the title
+                        confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                        cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                    }
+                });
+                setLoadingc(false);
             }
 
         } else if (!adminMessageFor && adminMessageFor2) { //specific user
@@ -115,6 +130,8 @@ const Account = () => {
                         setAdminMessageFor2('')
                         setAdminMessage('')
                         setAll('')
+                        setModalA(false)
+                        setLoadingc(true);
                     }
                 }
             }
@@ -134,23 +151,48 @@ const Account = () => {
             if (error) {
                 console.error("Error inserting into adminmessage:", error);
             } else {
-                window.alert("sendind specific admin")
                 setAdminMessageFor('')
                 setAdminMessageFor2('')
                 setAdminMessage('')
                 setAll('')
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Message sent to admin.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'swal2-popup',    // Apply the custom class to the popup
+                        title: 'swal2-title',    // Apply the custom class to the title
+                        confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                        cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                    }
+                });
+                setModalA(false)
+                setLoadingc(true);
             }
         } else if (!adminMessageFor && !adminMessageFor2 && all == "user") { //all use
             const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('father', 6528707984).eq('to', 'User').eq('for', 'all'); // Update all rows where `did` is greater than 0
             if (findErrorB) {
                 console.error(findErrorB.message)
             } else {
-                window.alert("sending all users")
                 setAdminMessageFor('')
                 setAdminMessageFor2('')
                 setAdminMessage('')
                 setAll('')
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Message sent to all user.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'swal2-popup',    // Apply the custom class to the popup
+                        title: 'swal2-title',    // Apply the custom class to the title
+                        confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                        cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                    }
+                });
                 setModalA(false)
+                setLoadingc(true);
             }
         }
         // else if (!adminMessageFor && !adminMessageFor2 && all == "adminuser") { //all user and admin
@@ -187,21 +229,49 @@ const Account = () => {
 
     }
     const updateRate = async () => {
+        setLoadingc(true);
         const { error: findErrorC } = await supabase.from('panel').update({ value: rate }).eq('owner', 6528707984).eq('key', 'rate'); // Update all rows where `did` is greater than 0
         if (findErrorC) {
             console.error(findErrorC.message)
         } else {
-            console.log("updated")
+            Swal.fire({
+                title: 'Success!',
+                text: 'Rate updated.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
+            setLoadingc(false);
+            setModalB(false)
         }
     }
     const updateAllRate = async () => {
+        setLoadingc(true);
         const { error: findErrorC } = await supabase.from('panel').update({ allrate: allrate }).gt('id', 0); // Update all rows where `did` is greater than 0
         if (findErrorC) {
             console.error(findErrorC.message)
         } else {
             setallRate(null)
+            Swal.fire({
+                title: 'Success!',
+                text: 'All Rate updated.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
+            setLoadingc(false);
+            setModalH(false)
 
-            console.log("updated")
         }
     }
 
@@ -527,11 +597,26 @@ const Account = () => {
 
 
     const updateDeposit = async () => {
+        setLoadingc(true);
         const { error: findErrorB } = await supabase.from('panel').update({ minmax: depositmin }).eq('owner', 6528707984).eq('key', 'minmax'); // Update all rows where `did` is greater than 0
         if (findErrorB) {
             console.error(findErrorB.message)
         } else {
-            // alert("ola")
+            Swal.fire({
+                title: 'Success!',
+                text: 'Minimum Seted',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'swal2-popup',    // Apply the custom class to the popup
+                    title: 'swal2-title',    // Apply the custom class to the title
+                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
+                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
+                }
+            });
+            setLoadingc(false);
+            setModalG(false)
+
         }
     }
 
@@ -734,12 +819,17 @@ const Account = () => {
                             <Button
 
                                 onClick={sendAdminMessage}
-                                className="w-full p-4"
+                                className="w-full p-4 flex"
                             // disabled={parseInt(aamount) <= userData.deposit || aamount === ''}
                             // style={{ display: but ? 'block' : 'none', marginTop: '10px', padding: '10px', backgroundColor: parseInt(aamount) >= userData.deposit ? 'var(--tgui--button_color)' : 'gray', color: 'white' }}
                             >
                                 {/* {(ag && again) ? "Try Again" : "Continue"} */}
-                                Send
+                                <FontAwesomeIcon
+                                    icon={faRefresh}
+                                    className={loadingc ? "spin" : ""}
+                                    style={{ marginRight: "8px", display: loadingc ? 'inline' : 'none', }} // Add spacing if needed
+                                />
+                                {loadingc ? "Sending..." : "Send"}
                             </Button>
 
 
@@ -799,7 +889,13 @@ const Account = () => {
                                 // style={{ display: but ? 'block' : 'none', marginTop: '10px', padding: '10px', backgroundColor: parseInt(aamount) >= userData.deposit ? 'var(--tgui--button_color)' : 'gray', color: 'white' }}
                                 >
                                     {/* {(ag && again) ? "Try Again" : "Continue"} */}
-                                    Send
+                                    <FontAwesomeIcon
+                                        icon={faRefresh}
+                                        className={loadingc ? "spin" : ""}
+                                        style={{ marginRight: "8px", display: loadingc ? 'inline' : 'none', }} // Add spacing if needed
+                                    />
+                                    {loadingc ? "Sending..." : "Send"}
+
                                 </Button>
 
 
@@ -1165,7 +1261,12 @@ const Account = () => {
                                 // style={{ display: but ? 'block' : 'none', marginTop: '10px', padding: '10px', backgroundColor: parseInt(aamount) >= userData.deposit ? 'var(--tgui--button_color)' : 'gray', color: 'white' }}
                                 >
                                     {/* {(ag && again) ? "Try Again" : "Continue"} */}
-                                    Set
+                                    <FontAwesomeIcon
+                                        icon={faRefresh}
+                                        className={loadingc ? "spin" : ""}
+                                        style={{ marginRight: "8px", display: loadingc ? 'inline' : 'none', }} // Add spacing if needed
+                                    />
+                                    {loadingc ? "Setting..." : "Set"}
                                 </Button>
 
 
@@ -1223,7 +1324,12 @@ const Account = () => {
                                 // style={{ display: but ? 'block' : 'none', marginTop: '10px', padding: '10px', backgroundColor: parseInt(aamount) >= userData.deposit ? 'var(--tgui--button_color)' : 'gray', color: 'white' }}
                                 >
                                     {/* {(ag && again) ? "Try Again" : "Continue"} */}
-                                    Send
+                                    <FontAwesomeIcon
+                                        icon={faRefresh}
+                                        className={loadingc ? "spin" : ""}
+                                        style={{ marginRight: "8px", display: loadingc ? 'inline' : 'none', }} // Add spacing if needed
+                                    />
+                                    {loadingc ? "Setting..." : "Set"}
                                 </Button>
 
 
