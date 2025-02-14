@@ -441,11 +441,7 @@ const Account = () => {
             console.error('Error updating bigvalue:', error.message);
         }
     }
-    const generateIframeSrc = () => {
-        return `https://paxyo.com/chapa.html?amount=1`;
 
-        // Return an empty string if the amount is not valid
-    };
 
     const send = async (mess) => {
 
@@ -528,30 +524,7 @@ const Account = () => {
         };
     }, []);
 
-    const addWithdrawl = async () => {
-        const wid = Math.floor(10000 + Math.random() * 90000); // generates a 5-digit random number
 
-        const { error: setError } = await supabase
-            .from('admin_withdrawl')
-            .insert([{
-                for: 7786592015,
-                bank: bank,
-                a_name: accountname,
-                a_no: acc,
-                wid: wid,
-                amount: amount
-            }])
-
-
-        if (setError) {
-            console.error('Error fetching initial balance:', setError)
-        } else {
-            setWithdrawldata((prevWith) => (
-                [...prevWith, { status: 'Pending', date: new Date().toISOString(), wid: wid, for: userData.current, bank: bank, a_name: accountname, a_no: acc, amount: amount }]
-
-            ))
-        }
-    }
 
     const updateDeposit = async () => {
         const { error: findErrorB } = await supabase.from('panel').update({ minmax: depositmin }).eq('owner', 6528707984).eq('key', 'minmax'); // Update all rows where `did` is greater than 0
