@@ -131,7 +131,7 @@ const Account = () => {
                         setAdminMessage('')
                         setAll('')
                         setModalA(false)
-                        setLoadingc(true);
+                        setLoadingc(false);
                     }
                 }
             }
@@ -168,7 +168,7 @@ const Account = () => {
                     }
                 });
                 setModalA(false)
-                setLoadingc(true);
+                setLoadingc(false);
             }
         } else if (!adminMessageFor && !adminMessageFor2 && all == "user") { //all use
             const { error: findErrorB } = await supabase.from('adminmessage').update({ message: adminMessage, seen: null }).eq('father', 6528707984).eq('to', 'User').eq('for', 'all'); // Update all rows where `did` is greater than 0
@@ -192,7 +192,7 @@ const Account = () => {
                     }
                 });
                 setModalA(false)
-                setLoadingc(true);
+                setLoadingc(false);
             }
         }
         // else if (!adminMessageFor && !adminMessageFor2 && all == "adminuser") { //all user and admin
@@ -739,7 +739,13 @@ const Account = () => {
                         if (error) {
                             console.log(error);
                         } else {
-                            setMm(fetchRate[0].minmax)
+                            const validMinmax = fetchRate
+                                .map(item => item.minmax)
+                                .filter(value => value !== null && !isNaN(value)); // Ensure it's numeric
+
+                            if (validMinmax.length > 0) {
+                                setMm(validMinmax[0]); // Set the first valid number
+                            }
                         }
                     }} className="w-full">min Deposit</Button>
                 </div>
