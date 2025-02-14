@@ -67,6 +67,7 @@ const Smm = () => {
                 ]);
             if (error) throw error;
             setIsModalOpen(false);
+            setMessageId(null)
         } catch (error) {
             console.error("Error sending message:", error.message);
         }

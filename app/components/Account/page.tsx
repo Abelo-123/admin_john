@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { supabase } from "@/app/lib/supabaseClient"
 import { Button, Input, Select } from "@telegram-apps/telegram-ui"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from '../UserContext';
 import axios from "axios";
 import MyLoader from "../Loader/page";
@@ -177,20 +177,7 @@ const Account = () => {
         if (findErrorC) {
             console.error(findErrorC.message)
         } else {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Update Rate.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'swal2-popup',    // Apply the custom class to the popup
-                    title: 'swal2-title',    // Apply the custom class to the title
-                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                }
-            });
-            setModalB(false)
-
+            console.log("updated")
         }
     }
     const updateAllRate = async () => {
@@ -200,19 +187,7 @@ const Account = () => {
         } else {
             setallRate(null)
 
-            Swal.fire({
-                title: 'Success!',
-                text: 'Update Rate.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'swal2-popup',    // Apply the custom class to the popup
-                    title: 'swal2-title',    // Apply the custom class to the title
-                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                }
-            });
-            setModalH(false)
+            console.log("updated")
         }
     }
 
@@ -569,19 +544,7 @@ const Account = () => {
         if (findErrorB) {
             console.error(findErrorB.message)
         } else {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Minimum deposit updated.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'swal2-popup',    // Apply the custom class to the popup
-                    title: 'swal2-title',    // Apply the custom class to the title
-                    confirmButton: 'swal2-confirm', // Apply the custom class to the confirm button
-                    cancelButton: 'swal2-cancel' // Apply the custom class to the cancel button
-                }
-            });
-            setModalG(false)
+            // alert("ola")
         }
     }
 
@@ -605,11 +568,11 @@ const Account = () => {
     return (
         <>
 
-            <div className="grid  gap-2 grid-row-2  px-12 w-full p-2 ">
-                <div className="p-2 h-fit  ">
+            <div className="grid  gap-2 grid-row-2  px-12 w-full p-2">
+                <div className="p-2 h-fit   ">
                     <Button onClick={() => setModalA(true)} className="w-full">Message</Button>
                 </div>
-                <div className="p-2 h-fit ">
+                <div className="p-2 h-fit flex gap-2">
                     <Button onClick={async () => {
                         setModalB(true)
                         const { data: fetchRate, error } = await supabase
@@ -626,12 +589,28 @@ const Account = () => {
                         }
 
                     }} className="w-full">Rate</Button>
+                    <Button onClick={async () => {
+                        const { data: fetchRate, error } = await supabase
+                            .from("panel")
+                            .select("allrate")
+                            .eq('owner', 6528707984)
+
+
+
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            setAllrate(fetchRate[0].allrate)
+                        }
+                        setModalH(true)
+                    }} className="w-full">Rate</Button>
                 </div>
-                <div className="p-2 h-fit flex gap-2">
+
+                <div className="p-2 h-fit flex gap-2 ">
                     <Button onClick={() => setModalC(true)} className="w-full">Disable</Button>
                     <Button onClick={() => setModalD(true)} className="w-full ">Enable</Button>
                 </div>
-                <div className="p-2 flex gap-2 h-fit">
+                <div className="p-2 h-fit flex gap-2">
                     <Button onClick={async () => {
                         setTg('')
                         setModalE(true)
@@ -646,7 +625,7 @@ const Account = () => {
                             setDepoo(depositForAdmin)
                         }
                     }
-                    } className="w-full">Monthly Deposit</Button>
+                    } className="w-full">Deposit</Button>
                     <Button onClick={async () => {
                         setModalF(true)
                         const { data: withdrawlForAdmin, error } = await supabase
@@ -688,35 +667,11 @@ const Account = () => {
                         if (error) {
                             console.log(error);
                         } else {
-                            const validMinmax = fetchRate
-                                .map(item => item.minmax)
-                                .filter(value => value !== null && !isNaN(value)); // Ensure it's numeric
-
-                            if (validMinmax.length > 0) {
-
-                                setMm(validMinmax[0]); // Set the first valid number
-                            }
-
+                            setMm(fetchRate[0].minmax)
                         }
                     }} className="w-full">min Deposit</Button>
                 </div>
-                <div className="p-2 h-fit ">
-                    <Button onClick={async () => {
-                        const { data: fetchRate, error } = await supabase
-                            .from("panel")
-                            .select("allrate")
-                            .eq('owner', 6528707984)
 
-
-
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            setAllrate(fetchRate[0].allrate)
-                        }
-                        setModalH(true)
-                    }} className="w-full">All Rate</Button>
-                </div>
 
             </div >
             {modalA && (
@@ -744,7 +699,7 @@ const Account = () => {
                         >
                             <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                         </div>
-                        <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Message</h2>
+                        <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Messages</h2>
 
                         <div className="amount-container">
 
@@ -755,8 +710,17 @@ const Account = () => {
                             }}>
                                 <option value="">ID</option>
                                 <option>admin</option>
+                                <option>user</option>
                             </Select>
 
+                            {!indi && (<Input
+                                header="UserID"
+                                type="number"
+                                className="w-full"
+                                placeholder="Enter user's id"
+                                onChange={(e) => setAdminMessageFor2(e.target.value)}
+                                value={adminMessageFor2}
+                            />)}
 
                             {!indi && (<Input
                                 header="AdminID"
@@ -823,7 +787,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Update Rate</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Rate</h2>
 
                             <div className="amount-container">
 
@@ -1033,9 +997,9 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Monthly deposits</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">M. Depost</h2>
 
-                            <div className="scrollabler amount-container">
+                            <div className="scrollable amount-container">
 
 
                                 {loadingb && <MyLoader />}
@@ -1104,9 +1068,9 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Withdrawls</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Withdrawl</h2>
 
-                            <div className="scrollabler amount-container">
+                            <div className="scrollable amount-container">
 
                                 {!loader &&
                                     <table style={{ width: "100%" }} className="  rounded-lg shadow-md">
@@ -1190,7 +1154,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Minimum Deposit</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Minimum deposit</h2>
 
                             <div className="amount-container">
 
@@ -1215,7 +1179,6 @@ const Account = () => {
                                 >
                                     {/* {(ag && again) ? "Try Again" : "Continue"} */}
                                     Set
-
                                 </Button>
 
 
@@ -1248,7 +1211,7 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Update Rate</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">All rate</h2>
 
                             <div className="amount-container">
 
@@ -1306,9 +1269,9 @@ const Account = () => {
                             >
                                 <FontAwesomeIcon icon={faClose} style={{ 'margin': 'auto auto' }} size="2x" />
                             </div>
-                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">Amounts</h2>
+                            <h2 style={{ color: 'var(--tgui--section_header_text_color)' }} className="text-xl font-semibold mb-4">A. Deposit</h2>
 
-                            <div className="scrollabler amount-container">
+                            <div className="scrollable amount-container">
 
 
                                 {loadingb && <MyLoader />}
