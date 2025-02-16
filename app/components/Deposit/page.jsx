@@ -20,6 +20,7 @@ const Orders = () => {
             const { data: initialData, error } = await supabase
                 .from("deposit")
                 .select("*")
+                .order("date", { ascending: false });
             if (error) {
                 console.log(error);
             } else {
